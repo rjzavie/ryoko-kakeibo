@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FAFAF6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F0E0C" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="京阪">
+
+<title>旅の帳冊</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+:root,[data-theme="light"]{
+  --bg:#FAFAF6;--surface:#FFFFFF;--surface-2:#F2EFE8;
+  --text-1:#1A1612;--text-2:#6E665C;--text-3:#A8A096;
+  --divider:#E8E2D6;--divider-soft:#F0EBE0;
+  --matcha:#5A7E40;--matcha-soft:#E6EDDC;
+  --coffee:#8B6F47;--danger:#B85248;
+}
+[data-theme="dark"]{
+  --bg:#0F0E0C;--surface:#1A1814;--surface-2:#221F1A;
+  --text-1:#F5F1EA;--text-2:#9C9388;--text-3:#5C5650;
+  --divider:#2A2620;--divider-soft:#1F1C18;
+  --matcha:#8FB16E;--matcha-soft:#2A3520;
+  --coffee:#B89878;--danger:#D17268;
+}
+@media (prefers-color-scheme: dark){
+  [data-theme="auto"]{
+    --bg:#0F0E0C;--surface:#1A1814;--surface-2:#221F1A;
+    --text-1:#F5F1EA;--text-2:#9C9388;--text-3:#5C5650;
+    --divider:#2A2620;--divider-soft:#1F1C18;
+    --matcha:#8FB16E;--matcha-soft:#2A3520;
+    --coffee:#B89878;--danger:#D17268;
+  }
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overscroll-behavior:none;touch-action:pan-x pan-y}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+  font-size:15px;color:var(--text-1);background:var(--bg);
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;
+  line-height:1.5;letter-spacing:0.02em;
+}
+.mincho{font-family:"Shippori Mincho B1","Noto Serif TC",serif}
+
+button{
+  font:inherit;color:inherit;background:none;border:none;
+  cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;
+}
+input{font:inherit;color:inherit}
+
+#app{
+  display:grid;
+  grid-template-rows:auto auto 1px auto 1px 1fr auto;
+  height:100vh;height:100dvh;
+  max-width:480px;margin:0 auto;background:var(--bg);
+  position:relative;
+  padding-top:env(safe-area-inset-top);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.divider{height:1px;background:var(--divider);border:none;margin:0 20px}
+
+/* Header */
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 10px}
+.app-title{font-family:"Shippori Mincho B1","Noto Serif TC",serif;font-size:22px;font-weight:500;letter-spacing:0.2em;color:var(--text-1)}
+.settings-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text-2);border-radius:6px}
+.settings-btn:active{background:var(--surface-2)}
+
+/* Hero */
+.hero{padding:4px 20px 20px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.hero-jpy{font-family:"Shippori Mincho B1","Noto Serif TC",serif;font-size:46px;font-weight:500;color:var(--text-1);letter-spacing:0.02em;line-height:1;flex-shrink:0}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;text-align:right;gap:6px;padding-bottom:4px}
+.hero-twd{font-size:15px;color:var(--text-2);letter-spacing:0.05em;white-space:nowrap}
+.hero-7day{font-size:13px;color:var(--text-2);letter-spacing:0.05em;white-space:nowrap}
+.hero-7day strong{color:var(--text-1);font-weight:500}
+
+/* Day Bar */
+.day-bar{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;padding:14px 20px;gap:8px}
+.day-arrow{width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--coffee);border-radius:50%}
+.day-arrow:active{background:var(--surface-2)}
+.day-arrow:disabled{color:var(--text-3);cursor:not-allowed;opacity:0.3}
+.day-info{text-align:center}
+.day-title{font-family:"Shippori Mincho B1","Noto Serif TC",serif;font-size:16px;font-weight:500;color:var(--text-1);letter-spacing:0.1em}
+.day-tip{margin-top:4px;font-size:13px;color:var(--text-2);letter-spacing:0.05em;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.day-tip-dot{color:var(--matcha);margin-right:4px}
+
+/* Record List */
+.record-list{overflow-y:auto;overflow-x:hidden;padding:4px 0 16px;-webkit-overflow-scrolling:touch}
+.record-list::-webkit-scrollbar{width:0}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;color:var(--text-3);font-size:13px;letter-spacing:0.1em}
+.empty-state::before{content:"·";font-size:40px;line-height:0.5;margin-bottom:12px}
+
+.record{position:relative;overflow:hidden;background:var(--bg);border-bottom:1px solid var(--divider-soft)}
+.record-btn{
+  display:grid;grid-template-columns:56px 28px 1fr auto;align-items:center;gap:10px;
+  padding:14px 20px;background:var(--bg);
+  transform:translateX(0);transition:transform 0.25s cubic-bezier(0.4,0,0.2,1);
+  position:relative;z-index:2;width:100%;text-align:left;
+}
+.record-btn.dragging{transition:none}
+.record-btn.revealed{transform:translateX(-80px)}
+.record-time{font-size:13px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.record-icon{font-size:18px;text-align:center}
+.record-item-text{font-size:15px;color:var(--text-1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.03em}
+.record-amount{font-size:15px;color:var(--text-1);font-variant-numeric:tabular-nums}
+.record-delete{position:absolute;right:0;top:0;bottom:0;width:80px;background:var(--danger);color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:13px;letter-spacing:0.2em;z-index:1}
+
+/* CTA */
+.swipe-cta{
+  background:var(--bg);padding:14px 20px 20px;border-top:1px solid var(--divider-soft);
+  user-select:none;-webkit-user-select:none;touch-action:pan-y;width:100%;
+}
+.handle-bar{width:36px;height:3px;background:var(--matcha);border-radius:2px;margin:0 auto 12px;opacity:0.7}
+.cta-arrow{font-size:20px;color:var(--matcha);display:block;text-align:center;animation:bounce 2.4s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:calc(110px + env(safe-area-inset-bottom));left:50%;
+  transform:translateX(-50%) translateY(40px);
+  background:var(--text-1);color:var(--bg);padding:12px 18px;border-radius:8px;
+  font-size:13px;letter-spacing:0.05em;display:flex;align-items:center;gap:12px;
+  opacity:0;pointer-events:none;transition:opacity 0.25s,transform 0.25s;
+  z-index:300;max-width:90%;box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+.toast.visible{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.toast-action{color:var(--matcha-soft);text-decoration:underline;cursor:pointer;letter-spacing:0.1em;padding:2px 4px}
+.toast-action.primary{color:#FFFFFF;background:var(--matcha);text-decoration:none;border-radius:4px;padding:4px 10px}
+
+/* Modal — use display switch (simplest, most reliable on iOS Safari) */
+.modal{
+  position:fixed;inset:0;z-index:200;
+  display:none;
+  flex-direction:column;justify-content:flex-end;
+  background:rgba(0,0,0,0.4);
+}
+.modal[data-open="true"]{display:flex}
+.modal-sheet{
+  background:var(--bg);border-radius:16px 16px 0 0;
+  padding:12px 20px calc(20px + env(safe-area-inset-bottom));
+  max-width:480px;margin:0 auto;width:100%;
+  max-height:92vh;max-height:92dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  animation:slideUp 0.3s cubic-bezier(0.32,0.72,0,1);
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+.modal-handle{width:36px;height:4px;background:var(--divider);border-radius:2px;margin:0 auto 16px}
+
+.modal-amount{text-align:center;padding:8px 0 14px}
+.amount-input{
+  font-family:"Shippori Mincho B1","Noto Serif TC",serif;font-size:44px;font-weight:500;
+  color:var(--text-1);background:transparent;border:none;text-align:center;width:100%;
+  letter-spacing:0.02em;line-height:1.1;caret-color:var(--matcha);
+}
+.amount-input:focus{outline:none}
+.amount-input::placeholder{color:var(--text-3)}
+.amount-twd{margin-top:4px;font-size:14px;color:var(--text-2);letter-spacing:0.05em;min-height:20px}
+.amount-twd.calc{color:var(--matcha);font-variant-numeric:tabular-nums}
+
+.modal-fields{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+.field-row{display:grid;grid-template-columns:60px 1fr;align-items:center;gap:12px}
+.field-row[hidden]{display:none}
+.field-label{font-family:"Shippori Mincho B1","Noto Serif TC",serif;font-size:13px;color:var(--text-2);letter-spacing:0.4em}
+.field-input{
+  width:100%;background:var(--surface-2);border:1px solid transparent;border-radius:8px;
+  padding:10px 12px;font-size:15px;color:var(--text-1);letter-spacing:0.03em;
+}
+.field-input:focus{outline:none;border-color:var(--matcha);background:var(--surface)}
+.field-input::placeholder{color:var(--text-3)}
+
+.category-picker,.payment-picker{display:flex;gap:6px;flex-wrap:nowrap}
+.pill{
+  flex:1;min-width:0;height:40px;background:var(--surface-2);border:1px solid transparent;
+  border-radius:8px;font-size:18px;display:flex;align-items:center;justify-content:center;
+}
+.pill.active{background:var(--matcha-soft);border-color:var(--matcha)}
+
+.transport-inputs{display:grid;grid-template-columns:1fr 16px 1fr;gap:6px;align-items:center}
+.transport-arrow{color:var(--text-3);text-align:center;font-size:14px}
+.transport-preview{margin-top:6px;font-size:12px;color:var(--text-3);letter-spacing:0.05em;min-height:16px}
+.transport-preview.visible{color:var(--matcha)}
+
+.modal-actions{display:flex;gap:12px;margin-top:20px}
+.btn{
+  flex:1;height:48px;border-radius:10px;
+  font-family:"Shippori Mincho B1","Noto Serif TC",serif;
+  font-size:15px;letter-spacing:0.3em;font-weight:500;
+}
+.btn-primary{background:var(--matcha);color:#FFFFFF}
+.btn-secondary{background:var(--surface-2);color:var(--text-1)}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid var(--danger)}
+
+/* Settings */
+.settings-page{
+  position:fixed;inset:0;z-index:150;background:var(--bg);
+  display:none;flex-direction:column;
+  max-width:480px;margin:0 auto;
+  padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);
+  animation:slideUp 0.3s cubic-bezier(0.32,0.72,0,1);
+}
+.settings-page[data-open="true"]{display:flex}
+
+.settings-header{display:flex;align-items:center;padding:14px 20px;border-bottom:1px solid var(--divider);gap:12px}
+.back-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text-2);border-radius:50%}
+.back-btn:active{background:var(--surface-2)}
+.settings-title{font-family:"Shippori Mincho B1","Noto Serif TC",serif;font-size:18px;letter-spacing:0.3em;color:var(--text-1);font-weight:500}
+
+.settings-body{flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch}
+.settings-section{margin-bottom:28px}
+.settings-section h3{font-family:"Shippori Mincho B1","Noto Serif TC",serif;font-size:13px;color:var(--text-2);letter-spacing:0.4em;font-weight:500;margin-bottom:10px}
+
+.segmented{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--surface-2);border-radius:10px;padding:4px}
+.segmented button{height:38px;border-radius:7px;font-size:13px;letter-spacing:0.05em;color:var(--text-2)}
+.segmented button.active{background:var(--bg);color:var(--text-1);box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+
+.trip-card{background:var(--surface-2);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.trip-card-name{font-family:"Shippori Mincho B1","Noto Serif TC",serif;font-size:16px;color:var(--text-1);letter-spacing:0.1em;margin-bottom:4px}
+.trip-card-meta{font-size:13px;color:var(--text-2);letter-spacing:0.05em}
+
+.settings-list{background:var(--surface-2);border-radius:12px;overflow:hidden}
+.settings-list-item{
+  display:flex;align-items:center;justify-content:space-between;width:100%;
+  padding:14px 16px;border-bottom:1px solid var(--divider-soft);
+  font-size:14px;color:var(--text-1);letter-spacing:0.05em;text-align:left;
+}
+.settings-list-item:last-child{border-bottom:none}
+.settings-list-item:active{background:var(--divider)}
+.settings-list-item .chevron{color:var(--text-3);font-size:14px}
+.settings-list-item .meta{color:var(--text-3);font-size:13px;font-variant-numeric:tabular-nums}
+
+.share-area{margin-top:8px;display:none}
+.share-area.visible{display:block}
+.share-area textarea{
+  width:100%;min-height:80px;background:var(--surface-2);border:1px solid var(--divider);
+  border-radius:8px;padding:10px;font-size:11px;
+  font-family:ui-monospace,"SF Mono","Menlo",monospace;
+  color:var(--text-1);letter-spacing:0;resize:vertical;
+}
+.share-area textarea:focus{outline:none;border-color:var(--matcha)}
+.share-actions{display:flex;gap:8px;margin-top:8px}
+.share-actions button{flex:1;height:36px;border-radius:8px;font-size:13px;letter-spacing:0.1em}
+.share-actions .btn-share-primary{background:var(--matcha);color:#FFFFFF}
+.share-actions .btn-share-secondary{background:var(--surface-2);color:var(--text-1)}
+
+/* build tag */
+.build-tag{
+  position:fixed;bottom:6px;right:8px;
+  font-size:9px;color:var(--text-3);opacity:0.5;
+  font-family:ui-monospace,"SF Mono",monospace;letter-spacing:0;
+  pointer-events:none;z-index:50;
+}
+
+/* Update banner (shown when service worker has new version) */
+.update-banner{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:500;
+  background:var(--matcha);
+  color:#FFFFFF;
+  padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;
+  display:none;
+  align-items:center;justify-content:space-between;
+  font-size:13px;letter-spacing:0.05em;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);
+}
+.update-banner[data-open="true"]{display:flex}
+.update-banner button{
+  background:#FFFFFF;color:var(--matcha);
+  padding:6px 14px;border-radius:6px;
+  font-size:12px;letter-spacing:0.1em;font-weight:500;
+}
+.update-banner button:active{opacity:0.8}
+.update-banner-text{flex:1;font-family:"Shippori Mincho B1","Noto Serif TC",serif;letter-spacing:0.1em}
+
+/* Onboarding popup (first visit only) */
+.onboarding{
+  position:fixed;inset:0;z-index:400;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  cursor:pointer;
+}
+.onboarding[data-open="true"]{display:block}
+
+.ob-hint{
+  position:absolute;
+  left:0;right:0;
+  display:flex;align-items:center;gap:14px;
+  color:#FFFFFF;font-family:"Shippori Mincho B1","Noto Serif TC",serif;
+  font-size:16px;letter-spacing:0.2em;
+  padding:0 36px;text-shadow:0 1px 4px rgba(0,0,0,0.5);
+  pointer-events:none;
+  box-sizing:border-box;
+}
+.ob-hint-top, .ob-hint-mid{
+  transform:translateY(-50%);
+}
+.ob-hint-mid{justify-content:flex-end}
+.ob-hint-bot{
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+
+.ob-arrow{flex-shrink:0}
+
+.ob-dismiss{
+  position:absolute;top:env(safe-area-inset-top);right:0;
+  padding:18px 22px;color:#FFFFFF;font-size:13px;
+  letter-spacing:0.1em;opacity:0.7;
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header class="app-header">
+    <h1 class="app-title">旅 の 帳 冊</h1>
+    <button type="button" class="settings-btn" id="settingsBtn" onclick="openSettings()" aria-label="設定">⚙</button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-jpy mincho" id="heroJpy">¥ 0</div>
+    <div class="hero-right">
+      <div class="hero-twd" id="heroTwd">≈ NT$ 0</div>
+      <div class="hero-7day" id="hero7day">Total <strong>¥ 0</strong> / <strong>NT$ 0</strong></div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="day-bar">
+    <button type="button" class="day-arrow" id="dayPrev" onclick="changeDay(-1)" aria-label="前一天">◀</button>
+    <div class="day-info">
+      <div class="day-title mincho" id="dayTitle">Day 1 · —</div>
+      <div class="day-tip"><span class="day-tip-dot">●</span><span id="dayTipText">—</span></div>
+    </div>
+    <button type="button" class="day-arrow" id="dayNext" onclick="changeDay(+1)" aria-label="後一天">▶</button>
+  </section>
+
+  <hr class="divider">
+
+  <main class="record-list" id="recordList"></main>
+
+  <!-- CTA is a button now, with onclick attribute as failsafe -->
+  <button type="button" class="swipe-cta" id="swipeCta" onclick="openAdd()">
+    <div class="handle-bar"></div>
+    <span class="cta-arrow">↑</span>
+  </button>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal" data-open="false" onclick="onModalBgClick(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-amount">
+      <input type="text" class="amount-input mincho" id="amountInput" inputmode="decimal" placeholder="¥ 0" autocomplete="off" oninput="onAmountInput()" onblur="commitAmount()">
+      <div class="amount-twd" id="amountTwd">&nbsp;</div>
+    </div>
+    <div class="modal-fields">
+      <div class="field-row" id="itemRow">
+        <label class="field-label mincho">項　目</label>
+        <input type="text" class="field-input" id="itemInput" placeholder="" autocomplete="off">
+      </div>
+      <div class="field-row" id="transportRow" hidden>
+        <label class="field-label mincho">路　線</label>
+        <div>
+          <div class="transport-inputs">
+            <input type="text" class="field-input" id="transportFrom" placeholder="起點" autocomplete="off" oninput="updateTransportPreview()">
+            <span class="transport-arrow">→</span>
+            <input type="text" class="field-input" id="transportTo" placeholder="終點" autocomplete="off" oninput="updateTransportPreview()">
+          </div>
+          <div class="transport-preview" id="transportPreview">&nbsp;</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <label class="field-label mincho">分　類</label>
+        <div class="category-picker" id="categoryPicker"></div>
+      </div>
+      <div class="field-row">
+        <label class="field-label mincho">付　款</label>
+        <div class="payment-picker" id="paymentPicker"></div>
+      </div>
+      <div class="field-row">
+        <label class="field-label mincho">備　註</label>
+        <input type="text" class="field-input" id="noteInput" placeholder="" autocomplete="off">
+      </div>
+    </div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<!-- Settings -->
+<div id="settingsPage" class="settings-page" data-open="false">
+  <header class="settings-header">
+    <button type="button" class="back-btn" onclick="closeSettings()" aria-label="返回">←</button>
+    <h2 class="settings-title mincho">設　定</h2>
+  </header>
+  <main class="settings-body">
+    <section class="settings-section">
+      <h3>外　觀</h3>
+      <div class="segmented" id="themeSegmented">
+        <button type="button" data-theme="light" onclick="setTheme('light')">☀️ 淺</button>
+        <button type="button" data-theme="dark" onclick="setTheme('dark')">🌙 深</button>
+        <button type="button" data-theme="auto" onclick="setTheme('auto')">⚙ 跟隨</button>
+      </div>
+    </section>
+    <section class="settings-section">
+      <h3>旅　程</h3>
+      <div class="trip-card">
+        <div class="trip-card-name mincho" id="tripCardName">—</div>
+        <div class="trip-card-meta" id="tripCardDate">—</div>
+        <div class="trip-card-meta" id="tripCardRate">—</div>
+      </div>
+    </section>
+    <section class="settings-section">
+      <h3>資　料</h3>
+      <div class="settings-list">
+        <button type="button" class="settings-list-item" onclick="exportFile()"><span>匯出 JSON</span><span class="chevron">→</span></button>
+        <button type="button" class="settings-list-item" onclick="triggerFilePick()"><span>匯入 JSON</span><span class="chevron">→</span></button>
+        <button type="button" class="settings-list-item" onclick="openShareArea()"><span>跨裝置分享碼</span><span class="chevron">→</span></button>
+        <button type="button" class="settings-list-item" style="color:var(--danger)" onclick="confirmClear()"><span>清除全部資料</span><span class="chevron">→</span></button>
+      </div>
+      <div class="share-area" id="shareArea">
+        <textarea id="shareCodeText" readonly placeholder="點「跨裝置分享碼」產生 / 或貼上他裝置的分享碼後點「匯入」"></textarea>
+        <div class="share-actions">
+          <button type="button" class="btn-share-primary" onclick="copyShareCode()">複　製</button>
+          <button type="button" class="btn-share-secondary" onclick="importShareCode()">匯　入</button>
+          <button type="button" class="btn-share-secondary" onclick="closeShareArea()">關　閉</button>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept="application/json" style="display:none" onchange="importFile(event)">
+    </section>
+    <section class="settings-section">
+      <h3>關　於</h3>
+      <div class="settings-list">
+        <div class="settings-list-item"><span>版本</span><span class="meta">v1.1</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- Onboarding popup (first-visit only) -->
+<div id="onboarding" class="onboarding" data-open="false" onclick="dismissOnboarding()">
+  <!-- 頂部：日期切換 -->
+  <div class="ob-hint ob-hint-top">
+    <svg class="ob-arrow" width="48" height="28" viewBox="0 0 48 28" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 6 14 Q 14 8, 22 14 T 42 14" stroke-dasharray="0"/>
+      <path d="M 6 14 L 12 9 M 6 14 L 12 19"/>
+      <path d="M 42 14 L 36 9 M 42 14 L 36 19"/>
+    </svg>
+    <span>◀▶ 切換日期</span>
+  </div>
+
+  <!-- 中段：左滑刪除 -->
+  <div class="ob-hint ob-hint-mid">
+    <span>左滑 → 刪除</span>
+    <svg class="ob-arrow" width="64" height="24" viewBox="0 0 64 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 56 13 Q 44 7, 32 13 T 8 12"/>
+      <path d="M 8 12 L 14 7 M 8 12 L 14 17"/>
+    </svg>
+  </div>
+
+  <!-- 底部：上滑記帳 -->
+  <div class="ob-hint ob-hint-bot">
+    <span>上滑記帳</span>
+    <svg class="ob-arrow" width="28" height="62" viewBox="0 0 28 62" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 14 54 Q 8 42, 14 30 T 14 8"/>
+      <path d="M 14 54 L 9 48 M 14 54 L 19 48"/>
+    </svg>
+  </div>
+
+  <div class="ob-dismiss">點任意處關閉</div>
+</div>
+
+<!-- Update banner (shown when new service worker is available) -->
+<div id="updateBanner" class="update-banner" data-open="false">
+  <span class="update-banner-text">有新版本可用</span>
+  <button type="button" onclick="applyUpdate()">更　新</button>
+</div>
+
+<div class="build-tag">v1.1</div>
+
+<script>
+'use strict';
+
+/* ============================================================
+   TRIP — inline only (no external dependency)
+   ============================================================ */
+window.TRIP = {
+  name: '京阪の記帳',
+  short: '京阪',
+  start: '2026-05-23',
+  end: '2026-05-29',
+  currency: { code: 'JPY', symbol: '¥' },
+  homeCurrency: { code: 'TWD', symbol: 'NT$' },
+  rate: 0.20,
+  dailyTips: {
+    '2026-05-23': '抵達日 — 出發京都',
+    '2026-05-24': 'Costco・錦市場・松本酒造・AEON',
+    '2026-05-25': '嵐山・嵯峨野小火車・清水寺',
+    '2026-05-26': '伊根舟屋・天橋立',
+    '2026-05-27': '臨空 Outlet',
+    '2026-05-28': '勝尾寺・神戶',
+    '2026-05-29': '返家 — 關西機場',
+  }
+};
+
+const STORAGE_KEY = 'travel-log-v5';
+const THEME_KEY = 'tabicho-theme';
+const V6_KEY = 'hou_keihan_2026_shopping';
+const LAST_DATE_KEY = 'tabicho-last-date';
+const ONBOARDED_KEY = 'tabicho-onboarded';
+
+const CATEGORIES = [
+  { id: 'food',      emoji: '🍽️', label: '餐飲', fieldLabel: '餐　飲' },
+  { id: 'transport', emoji: '🚃', label: '交通', fieldLabel: '路　線' },
+  { id: 'ticket',    emoji: '🎫', label: '門票', fieldLabel: '門　票' },
+  { id: 'shopping',  emoji: '🛍️', label: '採購', fieldLabel: '採　購' },
+  { id: 'other',     emoji: '💡', label: '其他', fieldLabel: '其　他' },
+];
+const PAYMENTS = [
+  { id: 'cash', emoji: '💴', label: '現金' },
+  { id: 'card', emoji: '💳', label: '刷卡' },
+  { id: 'ic', emoji: '🎴', label: 'IC 卡' },
+];
+const DOW = ['日', '一', '二', '三', '四', '五', '六'];
+
+/* ============================================================ */
+function $(id) { return document.getElementById(id); }
+function genId() { return 'rec_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function nowISO() { return new Date().toISOString(); }
+function parseDate(s) { const p = String(s).split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
+function fmtISO(d) { const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0'); return y+'-'+m+'-'+dd; }
+function fmtDayLbl(iso) { const d=parseDate(iso); return (d.getMonth()+1)+'/'+d.getDate()+' ('+DOW[d.getDay()]+')'; }
+function addDays(iso,n){const d=parseDate(iso);d.setDate(d.getDate()+n);return fmtISO(d);}
+function dayNum(iso) { return Math.round((parseDate(iso)-parseDate(TRIP.start))/86400000)+1; }
+function fmtJPY(n) { return '¥ '+Math.round(n).toLocaleString('en-US'); }
+function fmtTWD(jpy) { return 'NT$ '+Math.round(jpy*TRIP.rate).toLocaleString('en-US'); }
+function smartDate() {
+  // 第一次進入 → Day 1；之後 → 上次位置
+  let stored = null;
+  try { stored = localStorage.getItem(LAST_DATE_KEY); } catch(e) {}
+  if (stored && stored >= TRIP.start && stored <= TRIP.end) return stored;
+  return TRIP.start;
+}
+function saveLastDate(iso) {
+  try { localStorage.setItem(LAST_DATE_KEY, iso); } catch(e) {}
+}
+function catEmoji(id) { const c=CATEGORIES.find(x=>x.id===id); return c?c.emoji:'💡'; }
+function curTime() { const d=new Date(); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function esc(s) { if (s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+
+/* ============================================================
+   Expression Parser
+   ============================================================ */
+function isExpr(s) { return s && /[+\-*/()×÷]/.test(s); }
+function evalExpr(s) {
+  if (s==null) return null;
+  const c = String(s).replace(/×/g,'*').replace(/÷/g,'/').replace(/\s/g,'');
+  if (!/^[\d+\-*/().]+$/.test(c)) return null;
+  try {
+    const t = tokenize(c); if (!t) return null;
+    const r = toRPN(t); if (!r) return null;
+    const v = evalRPN(r); if (v==null || !isFinite(v)) return null;
+    return v;
+  } catch(e) { return null; }
+}
+function tokenize(s) {
+  const tk = []; let i=0;
+  while (i<s.length) {
+    const c=s[i];
+    if ('+-*/()'.indexOf(c)>=0) {
+      if (c==='-' && (tk.length===0 || ['+','-','*','/','('].indexOf(tk[tk.length-1])>=0)) {
+        let j=i+1; while (j<s.length && /[\d.]/.test(s[j])) j++;
+        if (j===i+1) return null;
+        tk.push(-parseFloat(s.slice(i+1,j))); i=j;
+      } else { tk.push(c); i++; }
+    } else if (/[\d.]/.test(c)) {
+      let j=i; while (j<s.length && /[\d.]/.test(s[j])) j++;
+      const n=parseFloat(s.slice(i,j)); if (isNaN(n)) return null;
+      tk.push(n); i=j;
+    } else return null;
+  }
+  return tk;
+}
+function toRPN(tk) {
+  const prec={'+':1,'-':1,'*':2,'/':2},out=[],op=[];
+  for (let k=0;k<tk.length;k++) {
+    const t=tk[k];
+    if (typeof t==='number') out.push(t);
+    else if (t==='(') op.push(t);
+    else if (t===')') {
+      while (op.length && op[op.length-1]!=='(') out.push(op.pop());
+      if (!op.length) return null; op.pop();
+    } else {
+      while (op.length && op[op.length-1]!=='(' && prec[op[op.length-1]]>=prec[t]) out.push(op.pop());
+      op.push(t);
+    }
+  }
+  while (op.length) { const x=op.pop(); if (x==='('||x===')') return null; out.push(x); }
+  return out;
+}
+function evalRPN(r) {
+  const st=[];
+  for (let k=0;k<r.length;k++) {
+    const t=r[k];
+    if (typeof t==='number') st.push(t);
+    else {
+      if (st.length<2) return null;
+      const b=st.pop(),a=st.pop(); let v;
+      if (t==='+') v=a+b; else if (t==='-') v=a-b;
+      else if (t==='*') v=a*b; else if (t==='/'){ if(b===0)return null; v=a/b; }
+      else return null;
+      st.push(v);
+    }
+  }
+  return st.length===1?st[0]:null;
+}
+
+/* ============================================================
+   State
+   ============================================================ */
+let store = { version: 5, records: [] };
+let selectedDate = null;
+let modalMode = null;
+let editingId = null;
+let curCategory = 'food';
+let curPayment = 'card';
+
+/* ============================================================
+   Storage
+   ============================================================ */
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (p && Array.isArray(p.records)) { store = p; return true; }
+    }
+  } catch(e) { console.error('load', e); }
+  return false;
+}
+function saveStore() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); }
+  catch(e) { console.error('save', e); }
+  memoryHash = hashFromData(store);
+}
+
+/* ============================================================
+   Conflict detection (hash-based)
+   ============================================================ */
+let memoryHash = '';
+
+function hashFromData(data) {
+  if (!data || !Array.isArray(data.records)) return 'empty';
+  const total = data.records.reduce((s,r)=>s+(r.amount||0), 0);
+  const latest = data.records.reduce((m,r)=>r.updatedAt && r.updatedAt>m ? r.updatedAt : m, '');
+  return data.records.length + '-' + total + '-' + latest;
+}
+
+function checkConflict() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const remote = JSON.parse(raw);
+    const remoteHash = hashFromData(remote);
+    if (remoteHash !== memoryHash && remoteHash !== 'empty') {
+      // storage 被別處改過，跟記憶體不同 → 詢問
+      showToast('資料有更新', {
+        duration: 12000,
+        actions: [
+          {
+            label: '使用新版',
+            primary: true,
+            onClick: () => {
+              store = remote;
+              memoryHash = remoteHash;
+              renderAll();
+              showToast('已採用新版資料');
+            }
+          },
+          {
+            label: '保留目前',
+            onClick: () => {
+              saveStore();  // 把記憶體寫回 storage
+              showToast('已保留目前版本');
+            }
+          }
+        ]
+      });
+    }
+  } catch(e) { console.error('conflict', e); }
+}
+
+/* ============================================================
+   Onboarding (first visit)
+   ============================================================ */
+function isOnboarded() {
+  try { return localStorage.getItem(ONBOARDED_KEY) === 'true'; }
+  catch(e) { return false; }
+}
+function showOnboarding() {
+  $('onboarding').setAttribute('data-open', 'true');
+  // 等 layout 確定後對齊提示位置
+  requestAnimationFrame(() => {
+    setTimeout(alignOnboardingHints, 50);
+  });
+}
+function alignOnboardingHints() {
+  const dayBar = document.querySelector('.day-bar');
+  const list = $('recordList');
+  const cta = $('swipeCta');
+
+  const topHint = document.querySelector('.ob-hint-top');
+  const midHint = document.querySelector('.ob-hint-mid');
+  const botHint = document.querySelector('.ob-hint-bot');
+
+  if (dayBar && topHint) {
+    const r = dayBar.getBoundingClientRect();
+    topHint.style.top = (r.top + r.height/2) + 'px';
+  }
+  if (list && midHint) {
+    const r = list.getBoundingClientRect();
+    midHint.style.top = (r.top + r.height/2) + 'px';
+  }
+  if (cta && botHint) {
+    const r = cta.getBoundingClientRect();
+    botHint.style.bottom = (window.innerHeight - r.top + 16) + 'px';
+  }
+}
+function dismissOnboarding() {
+  $('onboarding').setAttribute('data-open', 'false');
+  try { localStorage.setItem(ONBOARDED_KEY, 'true'); } catch(e) {}
+}
+
+/* ============================================================
+   v6 → v5 Migration
+   ============================================================ */
+function needsMigrate() {
+  try { return !localStorage.getItem(STORAGE_KEY) && !!localStorage.getItem(V6_KEY); }
+  catch(e) { return false; }
+}
+function runMigrate() {
+  try {
+    const raw = localStorage.getItem(V6_KEY);
+    if (!raw) return 0;
+    const v6 = JSON.parse(raw);
+    const recs = [];
+    const guessDate = fmtISO(new Date((parseDate(TRIP.start).getTime()+parseDate(TRIP.end).getTime())/2));
+
+    if (Array.isArray(v6.categories)) {
+      v6.categories.forEach(cat => {
+        if (!Array.isArray(cat.items)) return;
+        cat.items.forEach(it => {
+          if (!it.done || typeof it.price!=='number' || it.price<=0) return;
+          recs.push({
+            id: genId(),
+            date: it.purchaseDate || guessDate,
+            time: it.purchaseTime || '12:00',
+            amount: Math.round(it.price),
+            category: 'shopping',
+            payment: it.paymentMethod==='cash' ? 'cash' : 'card',
+            item: it.text || '（未命名）',
+            note: it.who ? '@ '+it.who : '',
+            createdAt: nowISO(), updatedAt: nowISO()
+          });
+        });
+      });
+    }
+    if (Array.isArray(v6.expenses)) {
+      v6.expenses.forEach(e => {
+        if (typeof e.price!=='number' || e.price<=0) return;
+        const map={food:'food',transport:'transport',ticket:'ticket',other:'other'};
+        const c = map[e.category]||'other';
+        recs.push({
+          id: genId(),
+          date: e.date || guessDate,
+          time: e.time || '12:00',
+          amount: Math.round(e.price),
+          category: c,
+          payment: e.paymentMethod==='cash' ? 'cash' : 'card',
+          item: e.text || (CATEGORIES.find(x=>x.id===c)||{}).label || '其他',
+          note: '',
+          createdAt: nowISO(), updatedAt: nowISO()
+        });
+      });
+    }
+    store = { version: 5, records: recs };
+    saveStore();
+    return recs.length;
+  } catch(e) { console.error('migrate', e); return 0; }
+}
+
+/* ============================================================
+   Theme
+   ============================================================ */
+function getTheme() {
+  try { return localStorage.getItem(THEME_KEY) || 'auto'; }
+  catch(e) { return 'auto'; }
+}
+function setTheme(mode) {
+  document.documentElement.setAttribute('data-theme', mode);
+  try { localStorage.setItem(THEME_KEY, mode); } catch(e) {}
+  syncStatusBar(mode);
+  renderThemeBtns();
+}
+function syncStatusBar(mode) {
+  let m = document.querySelector('meta[name="theme-color"][data-override="true"]');
+  if (mode === 'auto') { if (m) m.remove(); return; }
+  if (!m) {
+    m = document.createElement('meta');
+    m.setAttribute('name', 'theme-color');
+    m.setAttribute('data-override', 'true');
+    document.head.appendChild(m);
+  }
+  m.setAttribute('content', mode==='dark' ? '#0F0E0C' : '#FAFAF6');
+}
+function renderThemeBtns() {
+  const cur = getTheme();
+  const btns = document.querySelectorAll('#themeSegmented button');
+  btns.forEach(b => b.classList.toggle('active', b.getAttribute('data-theme')===cur));
+}
+
+/* ============================================================
+   Records — filter / sum
+   ============================================================ */
+function byDate(iso) { return store.records.filter(r=>r.date===iso).sort((a,b)=>String(a.time).localeCompare(String(b.time))); }
+function sumByDate(iso) { return byDate(iso).reduce((s,r)=>s+(r.amount||0),0); }
+function sumTotal() {
+  return store.records
+    .filter(r => r.date >= TRIP.start && r.date <= TRIP.end)
+    .reduce((s, r) => s + (r.amount || 0), 0);
+}
+
+/* ============================================================
+   Toast
+   ============================================================ */
+let toastTimer = null;
+function showToast(msg, opts) {
+  opts = opts||{};
+  const dur = opts.duration!=null ? opts.duration : 3000;
+  const el = $('toast');
+  el.innerHTML = '';
+  const t = document.createElement('span'); t.textContent = msg; el.appendChild(t);
+
+  // 支援單一 action（向後相容）或多 actions
+  const actions = opts.actions || (opts.action ? [opts.action] : []);
+  actions.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'toast-action' + (a.primary ? ' primary' : '');
+    b.textContent = a.label;
+    b.onclick = () => { a.onClick(); hideToast(); };
+    el.appendChild(b);
+  });
+
+  el.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(hideToast, dur);
+}
+function hideToast() { $('toast').classList.remove('visible'); clearTimeout(toastTimer); }
+
+/* ============================================================
+   Render
+   ============================================================ */
+function renderHero() {
+  const d = sumByDate(selectedDate), s = sumTotal();
+  $('heroJpy').textContent = fmtJPY(d);
+  $('heroTwd').textContent = '≈ '+fmtTWD(d);
+  $('hero7day').innerHTML = 'Total <strong>'+fmtJPY(s)+'</strong> / <strong>'+fmtTWD(s)+'</strong>';
+}
+function renderDayBar() {
+  $('dayTitle').textContent = 'Day '+dayNum(selectedDate)+' · '+fmtDayLbl(selectedDate);
+  $('dayTipText').textContent = (TRIP.dailyTips && TRIP.dailyTips[selectedDate]) || '—';
+  $('dayPrev').disabled = (selectedDate<=TRIP.start);
+  $('dayNext').disabled = (selectedDate>=TRIP.end);
+}
+function renderList() {
+  const list = $('recordList');
+  list.innerHTML = '';
+  const recs = byDate(selectedDate);
+  if (recs.length===0) {
+    const e = document.createElement('div'); e.className='empty-state'; e.textContent='上滑記第一筆';
+    list.appendChild(e); return;
+  }
+  recs.forEach(r => list.appendChild(buildRecEl(r)));
+}
+function buildRecEl(rec) {
+  const wrap = document.createElement('div'); wrap.className='record';
+  const del = document.createElement('div'); del.className='record-delete'; del.textContent='刪除';
+  del.onclick = (e) => { e.stopPropagation(); deleteRec(rec.id); };
+  const btn = document.createElement('button');
+  btn.type='button'; btn.className='record-btn';
+  btn.innerHTML =
+    '<span class="record-time">'+esc(rec.time)+'</span>'+
+    '<span class="record-icon">'+catEmoji(rec.category)+'</span>'+
+    '<span class="record-item-text">'+esc(rec.item)+'</span>'+
+    '<span class="record-amount">'+fmtJPY(rec.amount)+'</span>';
+  btn.onclick = () => {
+    if (btn.classList.contains('revealed')) { btn.classList.remove('revealed'); return; }
+    openEdit(rec.id);
+  };
+  wrap.appendChild(del); wrap.appendChild(btn);
+  attachSwipe(btn);
+  return wrap;
+}
+function renderAll() { renderHero(); renderDayBar(); renderList(); }
+
+/* ============================================================
+   Swipe-to-delete
+   ============================================================ */
+function attachSwipe(el) {
+  let sx=null, sy=null, dx=0, lk=null;
+  el.addEventListener('touchstart', (e) => {
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; dx=0; lk=null;
+    el.classList.add('dragging');
+  }, { passive: true });
+  el.addEventListener('touchmove', (e) => {
+    if (sx===null) return;
+    const ddx=e.touches[0].clientX-sx, ddy=e.touches[0].clientY-sy;
+    if (lk===null && (Math.abs(ddx)>6 || Math.abs(ddy)>6)) lk = Math.abs(ddx)>Math.abs(ddy)?'h':'v';
+    if (lk!=='h') return;
+    dx = Math.min(0, ddx);
+    if (el.classList.contains('revealed')) dx = Math.min(0, ddx-80);
+    el.style.transform = 'translateX('+dx+'px)';
+  }, { passive: true });
+  el.addEventListener('touchend', () => {
+    el.classList.remove('dragging'); el.style.transform='';
+    if (lk==='h') {
+      const wr = el.classList.contains('revealed');
+      const fn = wr ? dx-80 : dx;
+      if (fn <= -40) el.classList.add('revealed'); else el.classList.remove('revealed');
+    }
+    sx=null; sy=null; dx=0; lk=null;
+  });
+}
+
+/* ============================================================
+   Day Bar swipe
+   ============================================================ */
+function attachDaySwipe() {
+  const bar = document.querySelector('.day-bar');
+  if (!bar) return;
+  let sx=null, sy=null, lk=null;
+  bar.addEventListener('touchstart', (e) => {
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; lk=null;
+  }, { passive: true });
+  bar.addEventListener('touchmove', (e) => {
+    if (sx===null) return;
+    const dx=e.touches[0].clientX-sx, dy=e.touches[0].clientY-sy;
+    if (lk===null && (Math.abs(dx)>8 || Math.abs(dy)>8)) lk = Math.abs(dx)>Math.abs(dy)?'h':'v';
+  }, { passive: true });
+  bar.addEventListener('touchend', (e) => {
+    if (sx===null || lk!=='h') { sx=null; return; }
+    const dx=e.changedTouches[0].clientX-sx;
+    if (dx<=-50) changeDay(+1); else if (dx>=50) changeDay(-1);
+    sx=null; sy=null; lk=null;
+  });
+}
+
+/* ============================================================
+   CTA swipe-up
+   ============================================================ */
+function attachCTASwipe() {
+  const cta = $('swipeCta');
+  if (!cta) return;
+  let sy=null, triggered=false;
+  cta.addEventListener('touchstart', (e) => { sy=e.touches[0].clientY; triggered=false; }, { passive: true });
+  cta.addEventListener('touchmove', (e) => {
+    if (sy===null || triggered) return;
+    const dy = sy-e.touches[0].clientY;
+    if (dy>30) { triggered=true; openAdd(); sy=null; }
+  }, { passive: true });
+  cta.addEventListener('touchend', () => { sy=null; });
+}
+
+/* ============================================================
+   Day navigation (called by onclick)
+   ============================================================ */
+function changeDay(d) {
+  const n = addDays(selectedDate, d);
+  if (n<TRIP.start || n>TRIP.end) return;
+  selectedDate = n;
+  saveLastDate(n);
+  renderAll();
+}
+
+/* ============================================================
+   Modal — open / close / save
+   ============================================================ */
+function openAdd() { openModal('new', null); }
+function openEdit(id) {
+  const r = store.records.find(x=>x.id===id);
+  if (r) openModal('edit', r);
+}
+function openModal(mode, rec) {
+  modalMode = mode;
+  editingId = rec ? rec.id : null;
+
+  // category & payment picker fill
+  fillCatPicker();
+  fillPayPicker();
+
+  if (rec) {
+    setCat(rec.category);
+    setPay(rec.payment);
+    $('amountInput').value = rec.amount;
+    $('noteInput').value = rec.note || '';
+    if (rec.category === 'transport') {
+      $('transportFrom').value = rec.transportFrom || '';
+      $('transportTo').value = rec.transportTo || '';
+      $('itemInput').value = '';
+    } else {
+      $('itemInput').value = rec.item || '';
+      $('transportFrom').value = '';
+      $('transportTo').value = '';
+    }
+  } else {
+    setCat('food'); setPay('card');
+    $('amountInput').value = '';
+    $('itemInput').value = '';
+    $('transportFrom').value = '';
+    $('transportTo').value = '';
+    $('noteInput').value = '';
+  }
+
+  onAmountInput();
+  updateTransportPreview();
+  renderActions();
+
+  $('modal').setAttribute('data-open', 'true');
+  if (mode === 'new') {
+    setTimeout(() => { try { $('amountInput').focus(); } catch(e){} }, 350);
+  }
+}
+function closeModal() {
+  $('modal').setAttribute('data-open', 'false');
+  modalMode = null; editingId = null;
+}
+function onModalBgClick(e) {
+  if (e.target.id === 'modal') closeModal();
+}
+
+function fillCatPicker() {
+  const c = $('categoryPicker');
+  if (c.children.length === 5) return;
+  c.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'pill';
+    b.setAttribute('data-id', cat.id);
+    b.textContent = cat.emoji;
+    b.setAttribute('aria-label', cat.label);
+    b.onclick = () => setCat(cat.id);
+    c.appendChild(b);
+  });
+}
+function fillPayPicker() {
+  const c = $('paymentPicker');
+  if (c.children.length === 3) return;
+  c.innerHTML = '';
+  PAYMENTS.forEach(p => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'pill';
+    b.setAttribute('data-id', p.id);
+    b.textContent = p.emoji;
+    b.setAttribute('aria-label', p.label);
+    b.onclick = () => setPay(p.id);
+    c.appendChild(b);
+  });
+}
+function setCat(id) {
+  curCategory = id;
+  document.querySelectorAll('#categoryPicker .pill').forEach(p => {
+    p.classList.toggle('active', p.getAttribute('data-id')===id);
+  });
+  const isT = id === 'transport';
+  $('itemRow').hidden = isT;
+  $('transportRow').hidden = !isT;
+  // 同步 itemRow label（transport 時隱藏，所以只影響非交通分類）
+  const cat = CATEGORIES.find(c => c.id === id);
+  const itemLabel = document.querySelector('#itemRow .field-label');
+  if (itemLabel && cat) itemLabel.textContent = cat.fieldLabel;
+  updateTransportPreview();
+}
+function setPay(id) {
+  curPayment = id;
+  document.querySelectorAll('#paymentPicker .pill').forEach(p => {
+    p.classList.toggle('active', p.getAttribute('data-id')===id);
+  });
+}
+
+function onAmountInput() {
+  const input = $('amountInput'), out = $('amountTwd');
+  if (!input || !out) return;
+  const s = input.value.trim();
+  if (!s) { out.innerHTML='&nbsp;'; out.classList.remove('calc'); return; }
+  if (isExpr(s)) {
+    const v = evalExpr(s);
+    if (v!=null && v>0) {
+      out.textContent = '= '+fmtJPY(v)+' · ≈ '+fmtTWD(v);
+      out.classList.add('calc');
+    } else { out.innerHTML='&nbsp;'; out.classList.remove('calc'); }
+  } else {
+    const n = parseFloat(s);
+    if (!isNaN(n) && n>0) { out.textContent = '≈ '+fmtTWD(n); out.classList.remove('calc'); }
+    else { out.innerHTML='&nbsp;'; out.classList.remove('calc'); }
+  }
+}
+function commitAmount() {
+  const input = $('amountInput');
+  if (!input) return;
+  const s = input.value.trim();
+  if (isExpr(s)) {
+    const v = evalExpr(s);
+    if (v!=null && v>0) { input.value = Math.round(v); onAmountInput(); }
+  }
+}
+
+function updateTransportPreview() {
+  if (curCategory !== 'transport') return;
+  const f = ($('transportFrom')||{}).value||'';
+  const t = ($('transportTo')||{}).value||'';
+  const p = $('transportPreview');
+  if (!p) return;
+  const ft=f.trim(), tt=t.trim();
+  let label='';
+  if (ft && tt) label = ft+' → '+tt+' 車資';
+  else if (ft) label = ft+' 車資';
+  else if (tt) label = tt+' 車資';
+  if (label) { p.textContent=label; p.classList.add('visible'); }
+  else { p.innerHTML='&nbsp;'; p.classList.remove('visible'); }
+}
+
+function renderActions() {
+  const a = $('modalActions');
+  a.innerHTML = '';
+  if (modalMode === 'edit') {
+    const d = document.createElement('button');
+    d.type='button'; d.className='btn btn-danger mincho'; d.textContent='刪　除';
+    d.onclick = handleDel;
+    const c = document.createElement('button');
+    c.type='button'; c.className='btn btn-secondary mincho'; c.textContent='取　消';
+    c.onclick = closeModal;
+    const s = document.createElement('button');
+    s.type='button'; s.className='btn btn-primary mincho'; s.textContent='儲　存';
+    s.onclick = handleSave;
+    a.appendChild(d); a.appendChild(c); a.appendChild(s);
+  } else {
+    const b = document.createElement('button');
+    b.type='button'; b.className='btn btn-primary mincho'; b.textContent='完　成';
+    b.onclick = handleSave;
+    a.appendChild(b);
+  }
+}
+
+function collectForm() {
+  const a = $('amountInput').value.trim();
+  let amt;
+  if (isExpr(a)) amt = evalExpr(a); else amt = parseFloat(a);
+  if (amt==null || isNaN(amt) || amt<=0) return { error: '請輸入有效金額' };
+
+  let item = '', tf=null, tt=null;
+  if (curCategory === 'transport') {
+    tf = $('transportFrom').value.trim() || null;
+    tt = $('transportTo').value.trim() || null;
+    if (tf && tt) item = tf+' → '+tt+' 車資';
+    else if (tf) item = tf+' 車資';
+    else if (tt) item = tt+' 車資';
+    if (!item) return { error: '請輸入路線（起點或終點）' };
+  } else {
+    item = $('itemInput').value.trim();
+    if (!item) return { error: '請填寫項目' };
+  }
+
+  return {
+    amount: Math.round(amt), item,
+    category: curCategory, payment: curPayment,
+    note: $('noteInput').value.trim(),
+    transportFrom: tf, transportTo: tt
+  };
+}
+
+function handleSave() {
+  const d = collectForm();
+  if (d.error) { showToast(d.error); return; }
+  if (modalMode === 'edit') {
+    const i = store.records.findIndex(r=>r.id===editingId);
+    if (i>=0) {
+      store.records[i] = Object.assign({}, store.records[i], d, { updatedAt: nowISO() });
+      saveStore();
+    }
+    renderAll(); closeModal(); showToast('已更新');
+  } else {
+    const r = Object.assign({
+      id: genId(),
+      date: selectedDate,
+      time: curTime(),
+      createdAt: nowISO(),
+      updatedAt: nowISO()
+    }, d);
+    store.records.push(r);
+    saveStore();
+    renderAll(); closeModal(); showToast('已記 '+fmtJPY(r.amount));
+  }
+}
+
+function handleDel() {
+  if (!editingId) return;
+  const id = editingId;
+  closeModal();
+  setTimeout(() => deleteRec(id), 200);
+}
+
+function deleteRec(id) {
+  const i = store.records.findIndex(r=>r.id===id);
+  if (i<0) return;
+  const removed = store.records.splice(i, 1)[0];
+  saveStore(); renderAll();
+  showToast('已刪除「'+removed.item+'」', {
+    duration: 5000,
+    action: { label: '復原', onClick: () => {
+      store.records.splice(i, 0, removed); saveStore(); renderAll();
+    }}
+  });
+}
+
+/* ============================================================
+   Settings
+   ============================================================ */
+function openSettings() {
+  renderThemeBtns();
+  // fill trip card
+  try {
+    $('tripCardName').textContent = TRIP.name || '—';
+    const days = Math.round((parseDate(TRIP.end)-parseDate(TRIP.start))/86400000)+1;
+    $('tripCardDate').textContent = TRIP.start.replace(/-/g,'.')+' – '+TRIP.end.slice(5).replace(/-/g,'.')+' · '+days+' 天';
+    $('tripCardRate').textContent = '匯率 1 '+TRIP.currency.symbol+' = '+TRIP.rate+' '+TRIP.homeCurrency.symbol;
+  } catch(e) {}
+  $('settingsPage').setAttribute('data-open', 'true');
+}
+function closeSettings() {
+  $('settingsPage').setAttribute('data-open', 'false');
+  closeShareArea();
+}
+
+/* ============================================================
+   Data I/O
+   ============================================================ */
+function exportFile() {
+  try {
+    const json = JSON.stringify(store, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = 'tabicho-'+(TRIP.short||'trip')+'-'+stamp+'.json';
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+    showToast('已下載 JSON');
+  } catch(e) { console.error(e); showToast('匯出失敗'); }
+}
+function triggerFilePick() { $('fileInput').click(); }
+function importFile(ev) {
+  const f = ev.target.files && ev.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result);
+      if (!d || !Array.isArray(d.records)) { showToast('檔案格式不正確'); return; }
+      if (!confirm('將覆蓋目前所有資料，確定匯入嗎？')) return;
+      store = d; saveStore(); renderAll();
+      showToast('已匯入 '+d.records.length+' 筆');
+    } catch(e) { console.error(e); showToast('檔案解析失敗'); }
+    ev.target.value = '';
+  };
+  r.readAsText(f);
+}
+function openShareArea() {
+  $('shareArea').classList.add('visible');
+  try {
+    const json = JSON.stringify(store);
+    const b64 = btoa(unescape(encodeURIComponent(json)));
+    $('shareCodeText').value = 'TABICHO5:'+b64;
+  } catch(e) { $('shareCodeText').value='產生失敗'; }
+}
+function closeShareArea() { $('shareArea').classList.remove('visible'); }
+function copyShareCode() {
+  const ta = $('shareCodeText');
+  ta.select();
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ta.value).then(
+        () => showToast('已複製'),
+        () => { document.execCommand('copy'); showToast('已複製'); }
+      );
+    } else { document.execCommand('copy'); showToast('已複製'); }
+  } catch(e) { showToast('複製失敗，請手動全選'); }
+}
+function importShareCode() {
+  const ta = $('shareCodeText');
+  const raw = ta.value.trim();
+  if (!raw) { showToast('請先貼上分享碼'); return; }
+  if (raw.indexOf('TABICHO5:')!==0) { showToast('分享碼格式不正確'); return; }
+  try {
+    const b64 = raw.slice('TABICHO5:'.length);
+    const json = decodeURIComponent(escape(atob(b64)));
+    const d = JSON.parse(json);
+    if (!d || !Array.isArray(d.records)) { showToast('資料格式不正確'); return; }
+    if (!confirm('將覆蓋目前所有資料，確定匯入嗎？')) return;
+    store = d; saveStore(); renderAll();
+    closeShareArea();
+    showToast('已匯入 '+d.records.length+' 筆');
+  } catch(e) { console.error(e); showToast('分享碼解析失敗'); }
+}
+function confirmClear() {
+  if (!confirm('將清除所有紀錄，無法復原。確定嗎？')) return;
+  if (!confirm('真的要清除全部資料嗎？（最後確認）')) return;
+  store = { version: 5, records: [] }; saveStore(); renderAll();
+  showToast('已清除');
+}
+
+/* ============================================================
+   Bootstrap
+   ============================================================ */
+function init() {
+  // theme first
+  try { setTheme(getTheme()); } catch(e) { console.error('theme', e); }
+
+  // 鎖定 zoom — JS 攔截 iOS 雙指與雙擊（viewport meta iOS 14+ 會忽略）
+  try {
+    document.addEventListener('gesturestart', (e) => e.preventDefault());
+    document.addEventListener('gesturechange', (e) => e.preventDefault());
+    document.addEventListener('gestureend', (e) => e.preventDefault());
+    document.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+    let lastTap = 0;
+    document.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      if (now - lastTap < 300 && now - lastTap > 0) e.preventDefault();
+      lastTap = now;
+    }, { passive: false });
+  } catch(e) { console.error('zoom-block', e); }
+
+  // migrate if needed
+  try {
+    if (needsMigrate()) {
+      const n = runMigrate();
+      if (n>0) setTimeout(() => showToast('已從 v6 匯入 '+n+' 筆'), 600);
+    }
+  } catch(e) { console.error('migrate', e); }
+
+  try { loadStore(); } catch(e) { console.error('load', e); }
+  memoryHash = hashFromData(store);
+
+  try { selectedDate = smartDate(); } catch(e) { console.error('date', e); selectedDate = TRIP.start; }
+
+  try { attachCTASwipe(); } catch(e) { console.error('cta', e); }
+  try { attachDaySwipe(); } catch(e) { console.error('day', e); }
+
+  // ESC closes modal / settings / onboarding
+  document.addEventListener('keydown', (e) => {
+    if (e.key==='Escape') {
+      if ($('onboarding').getAttribute('data-open')==='true') dismissOnboarding();
+      else if ($('modal').getAttribute('data-open')==='true') closeModal();
+      else if ($('settingsPage').getAttribute('data-open')==='true') closeSettings();
+    }
+  });
+
+  // visibility change → conflict check
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      setTimeout(checkConflict, 100);
+    }
+  });
+
+  try { renderAll(); } catch(e) { console.error('render', e); }
+
+  // first-visit onboarding
+  if (!isOnboarded()) {
+    setTimeout(showOnboarding, 600);
+  }
+
+  console.info('[ryoko-kakeibo v1.1] ready');
+}
+
+if (document.readyState==='loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+/* ============================================================
+   Service Worker registration + update detection
+   ============================================================ */
+let pendingWorker = null;
+
+function applyUpdate() {
+  if (pendingWorker) {
+    pendingWorker.postMessage({ type: 'SKIP_WAITING' });
+  }
+  window.location.reload();
+}
+
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').then(reg => {
+      // 每次頁面開啟時主動檢查更新
+      reg.update().catch(() => {});
+
+      // 偵測到有新 SW 正在 install
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', () => {
+          // installed + 已有 controller = 有新版且現在有舊版在跑
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            pendingWorker = newWorker;
+            const banner = document.getElementById('updateBanner');
+            if (banner) banner.setAttribute('data-open', 'true');
+          }
+        });
+      });
+
+      // SW 接管變更時自動 reload（避免 user 看到舊頁配新 SW 的狀態）
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+      });
+    }).catch(err => {
+      console.info('[sw] register skipped:', err.message);
+    });
+  });
+}
+</script>
+
+</body>
+</html>

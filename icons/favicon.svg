@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- 平攤右頁紙質 -->
+    <linearGradient id="pageR" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EBDBB5"/>
+      <stop offset="100%" stop-color="#D9C594"/>
+    </linearGradient>
+    <!-- 翹起左頁紙質（外緣較亮，書脊處較暗） -->
+    <linearGradient id="pageL" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F2E4C2"/>
+      <stop offset="100%" stop-color="#C8B486"/>
+    </linearGradient>
+    <!-- 毛筆筆毛（從根部到尖端的墨色漸層） -->
+    <linearGradient id="brushHair" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3A2818"/>
+      <stop offset="30%" stop-color="#0A0805"/>
+      <stop offset="80%" stop-color="#0A0805"/>
+      <stop offset="100%" stop-color="#000"/>
+    </linearGradient>
+    <!-- 筆桿木紋漸層 -->
+    <linearGradient id="brushHandle" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4A3020"/>
+      <stop offset="50%" stop-color="#2A1F18"/>
+      <stop offset="100%" stop-color="#1A1208"/>
+    </linearGradient>
+    <radialGradient id="shadow" cx="50%" cy="100%" r="60%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <!-- 翹起頁的底面陰影 -->
+    <linearGradient id="liftShade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 圓角米白背景 -->
+  <rect width="512" height="512" rx="96" fill="#FAFAF6"/>
+
+  <!-- 書本下方陰影 -->
+  <ellipse cx="256" cy="446" rx="200" ry="13" fill="url(#shadow)"/>
+
+  <!-- 書本底層紙堆（厚度） -->
+  <path d="M 60 414 Q 256 396, 452 414 L 456 142 Q 256 122, 56 142 Z"
+        fill="#C5B084" stroke="#7A6850" stroke-width="2"/>
+
+  <!-- ===== 右頁（平攤、寫滿記帳） ===== -->
+  <path d="M 258 130 Q 358 122, 446 140 L 446 406 Q 358 392, 258 408 Z"
+        fill="url(#pageR)" stroke="#9B8A6C" stroke-width="1.5"/>
+
+  <!-- 右頁表格橫線 -->
+  <g stroke="#9B8A6C" stroke-width="0.8" opacity="0.35">
+    <line x1="264" y1="180" x2="442" y2="180"/>
+    <line x1="264" y1="240" x2="442" y2="240"/>
+    <line x1="264" y1="300" x2="442" y2="300"/>
+    <line x1="264" y1="360" x2="442" y2="360"/>
+  </g>
+
+  <!-- 右頁直書日文示意（短直線當文字） -->
+  <g stroke="#2A1F14" stroke-width="3" stroke-linecap="round" opacity="0.85">
+    <!-- 第一欄 -->
+    <line x1="285" y1="150" x2="285" y2="170"/>
+    <line x1="285" y1="195" x2="285" y2="213"/>
+    <line x1="285" y1="222" x2="285" y2="238"/>
+    <!-- 第二欄 -->
+    <line x1="325" y1="150" x2="325" y2="170"/>
+    <line x1="325" y1="195" x2="325" y2="213"/>
+    <!-- 第三欄 -->
+    <line x1="365" y1="150" x2="365" y2="170"/>
+    <line x1="365" y1="195" x2="365" y2="213"/>
+    <line x1="365" y1="222" x2="365" y2="240"/>
+    <line x1="365" y1="252" x2="365" y2="268"/>
+  </g>
+
+  <!-- 右頁金額欄（橫線） -->
+  <g stroke="#5A4030" stroke-width="2.2" stroke-linecap="round" opacity="0.7">
+    <line x1="395" y1="200" x2="430" y2="200"/>
+    <line x1="395" y1="225" x2="425" y2="225"/>
+    <line x1="395" y1="320" x2="430" y2="320"/>
+    <line x1="395" y1="345" x2="425" y2="345"/>
+  </g>
+
+  <!-- 右頁酒紅印章 -->
+  <rect x="296" y="318" width="48" height="52" fill="#722F37" rx="2"/>
+  <rect x="304" y="326" width="32" height="36" fill="none" stroke="#F2E4C2" stroke-width="1.8"/>
+
+  <!-- ===== 書脊（中央 V 形摺） ===== -->
+  <path d="M 250 130 Q 252 250, 250 408 L 258 408 Q 256 250, 258 130 Z" fill="#5A4830"/>
+  <line x1="254" y1="132" x2="254" y2="406" stroke="#1F1408" stroke-width="1" opacity="0.8"/>
+
+  <!-- ===== 左頁（翹起：上方抬高、向右下方傾斜回書脊） ===== -->
+  <!-- 翹起頁的下緣陰影（顯示這頁是抬起來的） -->
+  <path d="M 58 220 L 248 200 L 248 240 L 62 250 Z"
+        fill="url(#liftShade)" opacity="0.6"/>
+
+  <!-- 翹起左頁主體 -->
+  <path d="M 62 218
+           Q 156 168, 248 140
+           L 250 408
+           Q 156 412, 60 414
+           Z"
+        fill="url(#pageL)" stroke="#9B8A6C" stroke-width="1.8"/>
+
+  <!-- 翹起左頁的內側陰影 (靠近書脊處較暗，模擬折角下方陰影) -->
+  <path d="M 200 154 Q 230 144, 248 140 L 250 200 Q 230 186, 200 176 Z"
+        fill="#000" opacity="0.08"/>
+
+  <!-- 翹起左頁（空白頁面或極少內容，因為是剛翻過來的新頁） -->
+  <g stroke="#9B8A6C" stroke-width="0.8" opacity="0.3">
+    <line x1="80" y1="280" x2="240" y2="276"/>
+    <line x1="80" y1="340" x2="240" y2="340"/>
+    <line x1="80" y1="395" x2="240" y2="395"/>
+  </g>
+  <!-- 翹起頁上零星幾條直書（顯示已寫到一半） -->
+  <g stroke="#2A1F14" stroke-width="2.6" stroke-linecap="round" opacity="0.7">
+    <line x1="105" y1="290" x2="105" y2="306"/>
+    <line x1="105" y1="316" x2="105" y2="332"/>
+    <line x1="140" y1="290" x2="140" y2="306"/>
+  </g>
+
+  <!-- 翹起左頁右上角的「折角」高光（強調紙頁立起來） -->
+  <path d="M 248 140 L 250 130 L 250 145 Z" fill="#FFFEEE" opacity="0.8"/>
+
+  <!-- ===== 真．毛筆 (放在右頁，斜放) ===== -->
+  <g transform="rotate(28 380 290)">
+    <!-- 1. 筆毛：梭形 (從箍口寬 → 中段最寬 → 尖端 taper 收尖) -->
+    <!-- 整體筆毛長度約 90px -->
+    <path d="M 290 282
+             Q 285 273, 270 272
+             Q 240 270, 220 274
+             Q 200 278, 185 282
+             Q 200 286, 220 290
+             Q 240 294, 270 292
+             Q 285 291, 290 282 Z"
+          fill="url(#brushHair)"/>
+
+    <!-- 筆毛尖端（最細處） -->
+    <path d="M 185 282 Q 178 281, 175 282 Q 178 283, 185 282 Z" fill="#000"/>
+
+    <!-- 筆鋒墨點 -->
+    <circle cx="175" cy="282" r="3" fill="#0A0805"/>
+
+    <!-- 筆毛根部分絲線（質感） -->
+    <g stroke="#1F1408" stroke-width="0.5" opacity="0.4">
+      <line x1="245" y1="275" x2="270" y2="276"/>
+      <line x1="245" y1="282" x2="270" y2="282"/>
+      <line x1="245" y1="289" x2="270" y2="288"/>
+    </g>
+
+    <!-- 2. 金屬箍 (連接筆毛與筆桿) -->
+    <rect x="287" y="270" width="16" height="24" fill="#9B7B4F" rx="1"/>
+    <rect x="287" y="272" width="16" height="3" fill="#C9A578"/>
+    <rect x="287" y="289" width="16" height="3" fill="#5A4030"/>
+
+    <!-- 3. 筆桿 (竹節狀: 三段，segment 之間有暗線) -->
+    <rect x="303" y="276" width="180" height="12" fill="url(#brushHandle)" rx="2"/>
+    <!-- 竹節分隔線 -->
+    <g stroke="#0A0805" stroke-width="1.2">
+      <line x1="358" y1="276" x2="358" y2="288"/>
+      <line x1="418" y1="276" x2="418" y2="288"/>
+    </g>
+    <!-- 竹節 highlight (節點上方略亮) -->
+    <g stroke="#6B4530" stroke-width="0.8" opacity="0.6">
+      <line x1="356" y1="277" x2="360" y2="277"/>
+      <line x1="416" y1="277" x2="420" y2="277"/>
+    </g>
+    <!-- 筆桿木紋 -->
+    <line x1="305" y1="280" x2="481" y2="280" stroke="#5A4030" stroke-width="0.4" opacity="0.5"/>
+
+    <!-- 4. 筆桿末端裝飾 (掛繩孔 + 朱紅穗) -->
+    <rect x="481" y="273" width="8" height="18" fill="#6B4530" rx="1"/>
+    <!-- 紅繩穗 -->
+    <circle cx="492" cy="282" r="4.5" fill="#722F37"/>
+    <line x1="492" y1="287" x2="490" y2="296" stroke="#722F37" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="492" y1="287" x2="494" y2="296" stroke="#722F37" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="492" y1="287" x2="492" y2="297" stroke="#5A1F25" stroke-width="1" stroke-linecap="round"/>
+  </g>
+</svg>
