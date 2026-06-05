@@ -11,7 +11,7 @@
  *   - 同源資源：網路優先，失敗 fallback cache
  *   - 第三方（字型等）：cache 優先，背景更新
  */
-const CACHE_NAME = 'ryoko-kakeibo-v1.1';
+const CACHE_NAME = 'ryoko-kakeibo-v1.1.1';
 const ASSETS = [
   './',
   './index.html',
@@ -21,6 +21,9 @@ const ASSETS = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-180.png',
+  './icons/favicon.ico',
+  './icons/favicon-32x32.png',
+  './icons/favicon-16x16.png',
 ];
 
 self.addEventListener('install', (event) => {

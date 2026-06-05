@@ -9,6 +9,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="京阪">
 
+<!-- favicon / icons -->
+<link rel="icon" href="icons/favicon.ico" sizes="any">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="manifest" href="manifest.json">
+
 <title>旅の帳冊</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -441,7 +449,7 @@ input{font:inherit;color:inherit}
     <section class="settings-section">
       <h3>關　於</h3>
       <div class="settings-list">
-        <div class="settings-list-item"><span>版本</span><span class="meta">v1.1</span></div>
+        <div class="settings-list-item"><span>版本</span><span class="meta">v1.1.1</span></div>
       </div>
     </section>
   </main>
@@ -488,7 +496,7 @@ input{font:inherit;color:inherit}
   <button type="button" onclick="applyUpdate()">更　新</button>
 </div>
 
-<div class="build-tag">v1.1</div>
+<div class="build-tag">v1.1.1</div>
 
 <script>
 'use strict';
@@ -1393,7 +1401,7 @@ function init() {
     setTimeout(showOnboarding, 600);
   }
 
-  console.info('[ryoko-kakeibo v1.1] ready');
+  console.info('[ryoko-kakeibo v1.1.1] ready');
 }
 
 if (document.readyState==='loading') {
