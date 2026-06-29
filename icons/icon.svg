@@ -1,0 +1,21 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- background -->
+  <rect width="200" height="200" fill="#161514"/>
+
+  <!-- open circular ring (gap at upper-right) -->
+  <path d="M 172.4 84.6 A 74 74 0 1 1 139.2 37.2"
+        fill="none" stroke="#efece1" stroke-width="11.5" stroke-linecap="butt"/>
+
+  <!-- Yen (¥) symbol -->
+  <g fill="none" stroke="#efece1" stroke-width="9" stroke-linecap="butt" stroke-linejoin="miter">
+    <path d="M 78 70 L 100 99 L 122 70"/>
+    <line x1="100" y1="99" x2="100" y2="139"/>
+    <line x1="80" y1="111" x2="120" y2="111"/>
+    <line x1="80" y1="123" x2="120" y2="123"/>
+  </g>
+
+  <!-- green cursor arrow pointing upper-right -->
+  <g transform="translate(178 40) rotate(45)">
+    <path d="M 0 0 L -13 31 L 0 23 L 13 31 Z" fill="#8ba374"/>
+  </g>
+</svg>

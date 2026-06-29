@@ -11,13 +11,14 @@
  *   - 同源資源：網路優先，失敗 fallback cache
  *   - 第三方（字型等）：cache 優先，背景更新
  */
-const CACHE_NAME = 'ryoko-kakeibo-v1.1.1';
+const CACHE_NAME = 'ryoko-kakeibo-v1.1.2';
 const ASSETS = [
   './',
   './index.html',
   './trip.config.js',
   './manifest.json',
   './icons/favicon.svg',
+  './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-180.png',
